@@ -105,7 +105,9 @@ fun Dashboard() {
                     }
                 }
             }
-
+item {
+    InternetSignalBoosterCard()
+}
             item {
                 Text(
                     "AI COMMAND CENTER",
