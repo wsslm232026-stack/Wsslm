@@ -1,3 +1,4 @@
+
 package com.algomind.ai.core
 
 data class AiModule(
@@ -9,69 +10,85 @@ data class AiModule(
 
 object ModuleRegistry {
 
+    const val VERSION = "2.0.0"
+
     val modules = listOf(
 
         AiModule(
             "core",
             "AI CORE",
-            "Pusat kendali kecerdasan buatan",
+            "Pusat kendali dan pengelolaan perintah AI.",
             "ACTIVE"
         ),
 
         AiModule(
             "cloud",
             "CLOUD ENGINE",
-            "Integrasi model AI cloud",
+            "Integrasi model AI cloud melalui backend API.",
             "NOT CONFIGURED"
         ),
 
         AiModule(
             "data",
             "DATA ENGINE",
-            "Pengumpulan dan validasi data",
+            "Pengumpulan, penyimpanan, dan validasi data.",
             "FOUNDATION"
         ),
 
         AiModule(
             "analytics",
             "ANALYTICS ENGINE",
-            "Statistik dan analisis pola",
-            "ACTIVE"
+            "Statistik, distribusi angka, dan analisis historis.",
+            "INTEGRATION REQUIRED"
         ),
 
         AiModule(
             "learning",
             "LEARNING ENGINE",
-            "Evaluasi model dan pembelajaran",
+            "Evaluasi model dan pembelajaran berbasis data.",
             "FOUNDATION"
         ),
 
         AiModule(
             "automation",
             "AUTOMATION ENGINE",
-            "Otomatisasi pekerjaan",
+            "Pengelolaan proses dan pekerjaan otomatis.",
             "FOUNDATION"
         ),
 
         AiModule(
             "security",
             "SECURITY ENGINE",
-            "Pengamanan akses dan data",
+            "Pengamanan akses, konfigurasi, dan data.",
             "FOUNDATION"
         ),
 
         AiModule(
             "connector",
             "API CONNECTOR",
-            "Koneksi layanan eksternal",
-            "FOUNDATION"
+            "Koneksi API dan layanan eksternal.",
+            "NOT CONFIGURED"
         ),
 
         AiModule(
             "report",
             "REPORT ENGINE",
-            "Pembuatan laporan",
+            "Pembuatan laporan dan ringkasan analisis.",
             "FOUNDATION"
         )
     )
+
+    fun getModule(id: String): AiModule? {
+        return modules.find { it.id == id }
+    }
+
+    fun getActiveModules(): List<AiModule> {
+        return modules.filter {
+            it.status == "ACTIVE"
+        }
+    }
+
+    fun getModuleCount(): Int {
+        return modules.size
+    }
 }
