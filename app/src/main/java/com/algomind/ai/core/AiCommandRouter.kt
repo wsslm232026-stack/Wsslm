@@ -7,99 +7,121 @@ import java.util.Locale
 
 object AiCommandRouter {
 
+    private val aliases = mapOf(
+        "alfa" to "bantuan",
+        "omega" to "status",
+        "nova" to "analisis bantuan",
+        "titan" to "keamanan",
+        "atlas" to "perangkat",
+        "orbit" to "jaringan",
+        "vega" to "saham",
+        "phoenix" to "diagnostik",
+        "echo" to "laporan",
+        "sleep" to "jeda"
+    )
+
     fun execute(command: String): AiResponse {
         val text = command.trim()
 
         if (text.isEmpty()) {
-            return response(
-                false,
-                "Perintah tidak boleh kosong.",
-                "VALIDATOR"
-            )
+            return response(false, "Perintah kosong.", "VALIDATOR")
         }
 
         val normalized = text.lowercase(Locale.ROOT)
+        val routed = aliases[normalized] ?: normalized
 
         return try {
             when {
-                normalized == "status" ||
-                normalized == "status sistem" -> {
-                    response(
-                        true,
-                        """
-                        ALGO MIND AI SYSTEM STATUS
+                routed == "bantuan" || routed == "help" ->
+                    response(true, """
+                        ALGO MIND AI MASTER COMMAND
 
-                        AI Router: ACTIVE
-                        Analytics Engine: TERPASANG
-                        Cloud AI: BELUM DIKONFIGURASI
+                        ALFA    : Pusat kendali
+                        OMEGA   : Status sistem
+                        NOVA    : Analisis angka
+                        TITAN   : Keamanan
+                        ATLAS   : Pengelolaan perangkat
+                        ORBIT   : Jaringan internet
+                        VEGA    : Pemantauan saham
+                        PHOENIX : Diagnostik aplikasi
+                        ECHO    : Laporan
+                        SLEEP   : Jeda otomatisasi
+
+                        Analisis:
+                        analisis angka: 1234,5678
+
+                        Kode kata bukan PIN keamanan.
+                        Tindakan sensitif perlu autentikasi.
+                    """.trimIndent(), "MASTER COMMAND")
+
+                routed == "status" ->
+                    response(true, """
+                        ALGO MIND AI STATUS
+                        Router: ACTIVE
+                        Master Command: ACTIVE
+                        Analytics: TERPASANG
+                        Cloud: BELUM DIKONFIGURASI
                         Database: BELUM TERHUBUNG
-                        Mode: Balanced
-                        """.trimIndent(),
-                        "SYSTEM"
-                    )
-                }
+                        Voice: BELUM DIINTEGRASIKAN
+                        PIN: BELUM DIINTEGRASIKAN
+                    """.trimIndent(), "SYSTEM")
 
-                normalized == "bantuan" ||
-                normalized == "help" -> {
-                    response(
-                        true,
-                        """
-                        DAFTAR PERINTAH
+                routed == "analisis bantuan" ->
+                    response(true,
+                        "Gunakan: analisis angka: 1234,5678",
+                        "ANALYTICS")
 
-                        1. status
-                        2. bantuan
-                        3. info sistem
-                        4. analisis angka: 1234,5678
-
-                        Catatan:
-                        Cloud AI memerlukan konfigurasi API.
-                        """.trimIndent(),
-                        "AI CORE"
-                    )
-                }
-
-                normalized.startsWith("analisis angka:") ||
-                normalized.startsWith("analisa angka:") -> {
+                routed.startsWith("analisis angka:") ||
+                routed.startsWith("analisa angka:") -> {
                     val input = text.substringAfter(":")
                     val result = AnalyticsEngine.analyze(input)
-
-                    response(
-                        result.first,
-                        result.second,
-                        "ANALYTICS ENGINE"
-                    )
+                    response(result.first, result.second, "ANALYTICS")
                 }
 
-                normalized == "info sistem" -> {
-                    response(
-                        true,
-                        """
-                        ALGO MIND AI
-                        Platform: Android
-                        Architecture: Modular
-                        Performance: Balanced
-                        Router: Active
-                        Cloud: Not Configured
-                        Database: Not Connected
-                        """.trimIndent(),
-                        "SYSTEM INFORMATION"
-                    )
-                }
+                routed == "keamanan" ->
+                    response(true,
+                        "TITAN: pemeriksaan keamanan untuk perangkat yang diizinkan.",
+                        "SECURITY")
 
-                else -> {
-                    response(
-                        false,
-                        "Perintah belum dikenali. Ketik bantuan.",
-                        "COMMAND ROUTER"
-                    )
-                }
+                routed == "perangkat" ->
+                    response(true,
+                        "ATLAS: pengelolaan perangkat dengan izin pemilik.",
+                        "DEVICE MANAGER")
+
+                routed == "jaringan" ->
+                    response(true,
+                        "ORBIT: periksa kartu Internet Signal Monitor.",
+                        "NETWORK")
+
+                routed == "saham" ->
+                    response(true,
+                        "VEGA: pemantauan pasar memerlukan API data resmi.",
+                        "MARKET")
+
+                routed == "diagnostik" ->
+                    response(true,
+                        "PHOENIX: periksa status aplikasi dan log build.",
+                        "DIAGNOSTICS")
+
+                routed == "laporan" ->
+                    response(true,
+                        "ECHO: Master Command dan router tersedia. Integrasi lain masih bertahap.",
+                        "REPORT")
+
+                routed == "jeda" ->
+                    response(true,
+                        "SLEEP: layanan otomatis belum tersedia untuk dihentikan.",
+                        "AUTOMATION")
+
+                else ->
+                    response(false,
+                        "Perintah tidak dikenali. Ketik ALFA.",
+                        "COMMAND ROUTER")
             }
         } catch (e: Exception) {
-            response(
-                false,
-                "Terjadi kesalahan: ${e.localizedMessage ?: "Unknown error"}",
-                "EXECUTION ERROR"
-            )
+            response(false,
+                "Kesalahan: ${e.localizedMessage ?: "Unknown error"}",
+                "EXECUTION ERROR")
         }
     }
 
