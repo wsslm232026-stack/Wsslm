@@ -1,4 +1,5 @@
-
+import com.algomind.ai.core.AiCommandRouter
+import com.algomind.ai.core.ModuleRegistry
 package com.algomind.ai.ui
 
 import androidx.compose.foundation.layout.*
