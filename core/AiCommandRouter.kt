@@ -1,7 +1,9 @@
+
 package com.algomind.ai.core
 
 import com.algomind.ai.engine.AnalyticsEngine
 import com.algomind.ai.data.AiResponse
+import java.util.Locale
 
 object AiCommandRouter {
 
@@ -17,79 +19,136 @@ object AiCommandRouter {
             )
         }
 
-        val normalized = text.lowercase()
+        val normalized = text.lowercase(Locale.ROOT)
 
-        return when {
+        return try {
 
-            normalized == "status" ||
-            normalized.contains("status sistem") -> {
+            when {
 
-                response(
-                    true,
-                    "AI Core aktif. Cloud dan database " +
-                    "belum dikonfigurasi.",
-                    "SYSTEM"
-                )
+                normalized == "status" ||
+                normalized.contains("status sistem") ||
+                normalized.contains("status aplikasi") -> {
+
+                    response(
+                        true,
+                        """
+                        ALGO MIND AI SYSTEM STATUS
+
+                        AI Router: ACTIVE
+                        Analytics Engine: TERPASANG
+                        Cloud AI: BELUM DIKONFIGURASI
+                        Database: BELUM TERHUBUNG
+                        Platform: Android
+                        Mode: Balanced
+
+                        Catatan: Status instalasi tidak
+                        menjamin seluruh mesin telah diuji.
+                        """.trimIndent(),
+                        "SYSTEM"
+                    )
+                }
+
+                normalized == "help" ||
+                normalized == "bantuan" ||
+                normalized.contains("daftar perintah") -> {
+
+                    response(
+                        true,
+                        """
+                        ALGO MIND AI COMMAND CENTER
+
+                        PERINTAH:
+
+                        1. status
+                        2. bantuan
+                        3. info sistem
+                        4. analisis angka: 1234,5678
+
+                        ANALYTICS:
+                        Gunakan format:
+                        analisis angka: 1234, 5678
+
+                        CLOUD:
+                        Memerlukan konfigurasi backend
+                        dan API yang valid.
+
+                        DATABASE:
+                        Memerlukan koneksi penyimpanan.
+                        """.trimIndent(),
+                        "AI CORE"
+                    )
+                }
+
+                normalized.startsWith("analisis angka:") ||
+                normalized.startsWith("analisa angka:") -> {
+
+                    val input = text.substringAfter(":")
+
+                    if (input.isBlank()) {
+                        response(
+                            false,
+                            "Masukkan angka setelah tanda titik dua.",
+                            "ANALYTICS VALIDATOR"
+                        )
+                    } else {
+
+                        val result =
+                            AnalyticsEngine.analyze(input)
+
+                        response(
+                            result.first,
+                            result.second,
+                            "ANALYTICS ENGINE"
+                        )
+                    }
+                }
+
+                normalized == "info sistem" ||
+                normalized == "informasi sistem" -> {
+
+                    response(
+                        true,
+                        """
+                        ALGO MIND AI
+                        Foundation Version: 1.0.0
+                        Platform: Android
+                        Architecture: Modular
+                        Performance: Balanced
+                        Command Router: Active
+                        Cloud: Not Configured
+                        Database: Not Connected
+                        """.trimIndent(),
+                        "SYSTEM INFORMATION"
+                    )
+                }
+
+                else -> {
+
+                    response(
+                        false,
+                        """
+                        Perintah belum dikenali.
+
+                        Silakan ketik:
+                        bantuan
+
+                        Untuk melihat daftar perintah
+                        yang tersedia.
+                        """.trimIndent(),
+                        "COMMAND ROUTER"
+                    )
+                }
             }
 
-            normalized.contains("bantuan") ||
-            normalized == "help" -> {
+        } catch (e: Exception) {
 
-                response(
-                    true,
-                    """
-                    PERINTAH TERSEDIA:
-
-                    1. status
-                    2. bantuan
-                    3. analisis angka: 1234,5678
-                    4. info sistem
-
-                    Fitur cloud memerlukan backend.
-                    """.trimIndent(),
-                    "AI CORE"
-                )
-            }
-
-            normalized.contains("analisis angka:") -> {
-
-                val input = text.substringAfter(
-                    ":",
-                    ""
-                )
-
-                val result =
-                    AnalyticsEngine.analyze(input)
-
-                response(
-                    result.first,
-                    result.second,
-                    "ANALYTICS ENGINE"
-                )
-            }
-
-            normalized.contains("info sistem") -> {
-
-                response(
-                    true,
-                    "ALGO MIND AI Foundation 1.0.0\n" +
-                    "Platform Android\n" +
-                    "Performa Balanced\n" +
-                    "Cloud: Belum dikonfigurasi\n" +
-                    "Database: Belum terhubung",
-                    "SYSTEM"
-                )
-            }
-
-            else -> {
-
-                response(
-                    false,
-                    "Perintah belum dikenali. " +
-                    "Ketik bantuan untuk melihat perintah.",
-                    "AI CORE"
-                )
-            }
+            response(
+                false,
+                "Terjadi kesalahan saat menjalankan perintah: ${
+                    e.localizedMessage ?: "Unknown error"
+                }",
+                "EXECUTION ERROR"
+            )
         }
     }
 
