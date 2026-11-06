@@ -1,5 +1,5 @@
 
-package com.algomind.ai.engine
+package com.algomind.ai.mesin
 
 import java.net.URI
 import java.util.Locale
