@@ -2,14 +2,30 @@
 package com.algomind.ai.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +56,7 @@ fun Dashboard() {
         }
 
         if (executing) return
+
         executing = true
 
         try {
@@ -66,17 +83,19 @@ fun Dashboard() {
         ) {
             item {
                 Text(
-                    "ALGO MIND AI",
+                    text = "ALGO MIND AI",
                     color = accent,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold
                 )
+
                 Text(
-                    "UNIFIED INTELLIGENCE PLATFORM",
+                    text = "UNIFIED INTELLIGENCE PLATFORM",
                     color = Color.White
                 )
+
                 Text(
-                    "AI COMMAND • ANALYTICS • CLOUD SYSTEM",
+                    text = "AI COMMAND • ANALYTICS • CLOUD SYSTEM",
                     color = Color.LightGray,
                     fontSize = 10.sp
                 )
@@ -90,14 +109,15 @@ fun Dashboard() {
                     )
                 ) {
                     Column(
-                        Modifier.padding(16.dp),
+                        modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            "SYSTEM MONITOR",
+                            text = "SYSTEM MONITOR",
                             color = accent,
                             fontWeight = FontWeight.Bold
                         )
+
                         Text("AI Router: Terpasang", color = Color.White)
                         Text("Analytics: Terpasang", color = Color.White)
                         Text("Cloud: Belum dikonfigurasi", color = Color.White)
@@ -105,55 +125,61 @@ fun Dashboard() {
                     }
                 }
             }
-item {
-    InternetSignalBoosterCard()
-}
+
             item {
-                Text(
-                    "AI COMMAND CENTER",
-                    color = accent,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                InternetSignalBoosterCard()
+            }
 
-                OutlinedTextField(
-                    value = command,
-                    onValueChange = { command = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Masukkan perintah AI") },
-                    placeholder = { Text("Contoh: bantuan atau status") },
-                    minLines = 2,
-                    maxLines = 5,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Send
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSend = { executeCommand(command) }
-                    )
-                )
-
-                Spacer(Modifier.height(10.dp))
-
-                Button(
-                    onClick = { executeCommand(command) },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !executing
+            item {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        if (executing) "PROCESSING..."
-                        else "EXECUTE COMMAND"
+                        text = "AI COMMAND CENTER",
+                        color = accent,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                }
 
-                OutlinedButton(
-                    onClick = {
-                        command = ""
-                        result = "ALGO MIND AI siap menerima perintah."
-                        source = "SYSTEM"
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("CLEAR COMMAND")
+                    OutlinedTextField(
+                        value = command,
+                        onValueChange = { command = it },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = { Text("Masukkan perintah AI") },
+                        placeholder = {
+                            Text("Contoh: bantuan atau status")
+                        },
+                        minLines = 2,
+                        maxLines = 5,
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Send
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSend = { executeCommand(command) }
+                        )
+                    )
+
+                    Button(
+                        onClick = { executeCommand(command) },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !executing
+                    ) {
+                        Text(
+                            if (executing) "PROCESSING..."
+                            else "EXECUTE COMMAND"
+                        )
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            command = ""
+                            result = "ALGO MIND AI siap menerima perintah."
+                            source = "SYSTEM"
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("CLEAR COMMAND")
+                    }
                 }
             }
 
@@ -164,33 +190,48 @@ item {
                         containerColor = panel
                     )
                 ) {
-                    Column(Modifier.padding(16.dp)) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
                         Text(
-                            "AI RESPONSE | $source",
+                            text = "AI RESPONSE | $source",
                             color = accent,
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(Modifier.height(10.dp))
-                        Text(result, color = Color.White)
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Text(
+                            text = result,
+                            color = Color.White
+                        )
                     }
                 }
             }
 
             item {
-                Text(
-                    "INTELLIGENCE MODULES",
-                    color = accent,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    "Sentuh modul untuk melihat detail.",
-                    color = Color.LightGray,
-                    fontSize = 12.sp
-                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = "INTELLIGENCE MODULES",
+                        color = accent,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = "Sentuh modul untuk melihat detail.",
+                        color = Color.LightGray,
+                        fontSize = 12.sp
+                    )
+                }
             }
 
-            items(ModuleRegistry.modules, key = { it.id }) { module ->
+            items(
+                items = ModuleRegistry.modules,
+                key = { module -> module.id }
+            ) { module ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -203,10 +244,13 @@ item {
 
                                 Status: ${module.status}
 
-                                ${if (module.status == "NOT CONFIGURED")
-                                    "Modul belum dikonfigurasi."
-                                else
-                                    "Informasi modul berhasil ditampilkan."}
+                                ${
+                                    if (module.status == "NOT CONFIGURED") {
+                                        "Modul belum dikonfigurasi."
+                                    } else {
+                                        "Informasi modul berhasil ditampilkan."
+                                    }
+                                }
                             """.trimIndent()
                         },
                     shape = RoundedCornerShape(14.dp),
@@ -215,26 +259,29 @@ item {
                     )
                 ) {
                     Column(
-                        Modifier.padding(16.dp),
+                        modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(7.dp)
                     ) {
                         Text(
-                            module.name,
+                            text = module.name,
                             color = accent,
                             fontWeight = FontWeight.Bold
                         )
+
                         Text(
-                            module.description,
+                            text = module.description,
                             color = Color.White,
                             fontSize = 13.sp
                         )
+
                         Text(
-                            "STATUS: ${module.status}",
+                            text = "STATUS: ${module.status}",
                             color = Color.LightGray,
                             fontSize = 11.sp
                         )
+
                         Text(
-                            "KETUK UNTUK DETAIL",
+                            text = "KETUK UNTUK DETAIL",
                             color = accent,
                             fontSize = 10.sp
                         )
@@ -244,7 +291,7 @@ item {
 
             item {
                 Text(
-                    "ALGO MIND AI • SYSTEM DASHBOARD",
+                    text = "ALGO MIND AI • SYSTEM DASHBOARD",
                     color = Color.Gray,
                     fontSize = 10.sp
                 )
